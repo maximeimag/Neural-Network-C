@@ -1,3 +1,5 @@
 *.gch
+*.o
 *.layout
 *.depend
+*.exe

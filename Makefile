@@ -1,23 +1,43 @@
 # Usage
 # make 			# Compile all binaries
-# make clean	# Clean all binaries and objects
+# make clean	# Clean all objects
+# make mrproper	# Clean all binaries and objects
 
-# Compiler and flags
-CC = gcc
-LINKERFLAGS = -lm
+CC=gcc
+CFLAGS=-W -Wall -ansi -pedantic -std=c99
+LDFLAGS=
+EXEC=test.exe
+SRC= $(wildcard src/*.c)
+OBJ= $(SRC:.c=.o)
 
-# Sources and binaries
-SRCS := $(wildcard src/*.c)
-OBJFILES := $(CFILES:.c=.o)
-OUT = main.exe
+# remove commands
+RM_COM=
+RM_FLAGS=
+OBJS_RM=
+GCHS_RM=
+ifeq ($(OS),Windows_NT)
+	RM_COM+=del
+	OBJS_RM+=src\*.o
+	GCHS_RM+=src\*.gch
+else
+	RM_COM+=rm
+	RM_FLAGS+=-rf
+	OBJS_RM+=src/*.o
+	GCHS_RM+=src/*.gch
+endif
 
-# Compiler tasks
+
+all: $(EXEC)
+
+$(EXEC): $(OBJ)
+	$(CC) -o $@ $^ $(LDFLAGS)
+
 %.o: %.c
-	$(CC) -c -o $@ $^
+	$(CC) -o $@ -c $< $(CFLAGS)
 
-$(OUT): $(OBJFILES)
-	$(CC) -o $@ $^
-
-.PHONY: clean
 clean:
-	rm -f $(OBJFILES) $(OUT)
+	$(RM_COM) $(RM_FLAGS) $(OBJS_RM)
+	$(RM_COM) $(RM_FLAGS) $(GCHS_RM)
+
+mrproper: clean
+	rm -rf $(EXEC)

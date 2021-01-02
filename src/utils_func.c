@@ -14,6 +14,11 @@ double dSigmoid(double x)
     return x * (1 - x);
 }
 
+double get_nan()
+{
+    return 0.0/0.0;
+}
+
 
 double ReLU(double x)
 {
@@ -36,7 +41,7 @@ double dReLU(double x)
 int *create_random_labels_array(int nb_labels, int array_size)
 {
     int *labels_array = (int *)malloc(sizeof(int) * array_size);
-    for (size_t i = 0; i < array_size; i++)
+    for (int i = 0; i < array_size; i++)
     {
         labels_array[i] = get_randint(0, nb_labels - 1);
     }
@@ -46,7 +51,7 @@ int *create_random_labels_array(int nb_labels, int array_size)
 double dot_product(double *X1, double *X2, int array_sizes)
 {
     double product = 0.0;
-    for (size_t i = 0; i < array_sizes; i++)
+    for (int i = 0; i < array_sizes; i++)
     {
         product += X1[i] * X2[i];
     }
@@ -82,7 +87,7 @@ double get_activation_value(double x, int activation_name, int get_derivative)
             break;
 
         default:
-            activation_value = NAN;
+            activation_value = get_nan();
     }
     return activation_value;
 }

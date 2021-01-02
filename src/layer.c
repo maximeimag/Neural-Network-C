@@ -102,7 +102,7 @@ int feed_forward(DenseLayer *layer, NetworkArray *input_array)
 
 void display_dense_layer(DenseLayer *layer)
 {
-    size_t i, j;
+    int i, j;
     printf("\n Input size : %d \n", layer->input_size);
     printf("Output size : %d \n", layer->output_size);
     printf("Output Array : \n [");
@@ -129,7 +129,7 @@ void free_layer(DenseLayer *layer)
 {
     free_network_array(layer->output);
     free(layer->biais);
-    for (size_t i = 0; i < layer->input_size; i ++)
+    for (int i = 0; i < layer->input_size; i ++)
     {
         free(layer->weights[i]);
     }

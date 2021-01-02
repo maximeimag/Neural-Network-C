@@ -64,7 +64,7 @@ int feed_forward_network(DenseNetwork *network, NetworkArray *input_array)
         return -1;
     }
     feed_forward(network->layer_list[0], input_array);
-    for (size_t i = 1; i < network->nb_layers; i++)
+    for (int i = 1; i < network->nb_layers; i++)
     {
         feed_forward(network->layer_list[i], network->layer_list[i - 1]->output);
     }
@@ -98,7 +98,7 @@ void display_network(DenseNetwork *network)
     printf("Batch size : %d \n", network->nb_batchs);
     printf("Number of layers : %d \n", network->nb_layers);
     DenseLayer *layer;
-    for (size_t i = 0; i < network->nb_layers; i++)
+    for (int i = 0; i < network->nb_layers; i++)
     {
         layer = network->layer_list[i];
         printf("layer %d : (%d, %d) -> (%d, %d) \n", i, layer->input_size, layer->nb_batchs, layer->output_size, layer->nb_batchs);
@@ -107,7 +107,7 @@ void display_network(DenseNetwork *network)
 
 void free_network(DenseNetwork *network)
 {
-    for (size_t i = 0; i < network->nb_layers; i++)
+    for (int i = 0; i < network->nb_layers; i++)
     {
         free_layer(network->layer_list[i]);
     }

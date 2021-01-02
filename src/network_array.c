@@ -88,7 +88,7 @@ double get_val(NetworkArray *network_array, int batch_id, int val_id)
     {
         return network_array->vals[batch_id][val_id];
     }
-    return NAN;
+    return get_nan();
 }
 
 

@@ -10,7 +10,7 @@ double dSigmoid(double x);
 double ReLU(double x);
 double dReLU(double x);
 
-double NAN = 0.0/0.0;
+double get_nan();
 
 double get_activation_value(double x, int activation_name, int get_derivative);
 
