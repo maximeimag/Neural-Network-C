@@ -1,5 +1,6 @@
 #include "network_array.h"
 #include "utils_func.h"
+#include "constants.h"
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -65,26 +66,31 @@ void init_array_values(NetworkArray *network_array)
 
 int is_valid_index(NetworkArray *network_array, int batch_id, int val_id)
 {
-    if (0 <= batch_id && batch_id < network_array->nb_batchs && 0 <= val_id && val_id < network_array->batch_size)
+    if (batch_id < 0 || batch_id >= network_array->nb_batchs)
     {
-        return 1;
+        return INVALID_BATCH_ID;
     }
-    return 0;
+    if (val_id < 0 || val_id >= network_array->batch_size)
+    {
+        return INVALID_VAL_ID;
+    }
+    return VALID_INDEX;
 }
 
 int set_val(NetworkArray *network_array, int batch_id, int val_id, double new_val)
 {
-    if (is_valid_index(network_array, batch_id, val_id))
+    int check_index = is_valid_index(network_array, batch_id, val_id);
+    if (check_index == VALID_INDEX)
     {
         network_array->vals[batch_id][val_id] = new_val;
-        return 1;
+        return SUCCESS;
     }
-    return -1;
+    return check_index;
 }
 
 double get_val(NetworkArray *network_array, int batch_id, int val_id)
 {
-    if (is_valid_index(network_array, batch_id, val_id))
+    if (is_valid_index(network_array, batch_id, val_id) == VALID_INDEX)
     {
         return network_array->vals[batch_id][val_id];
     }
@@ -98,22 +104,23 @@ int compare_size(NetworkArray *network_array_1, NetworkArray *network_array_2)
 {
     if (network_array_1->batch_size != network_array_2->batch_size)
     {
-        return 0;
+        return INCOMPATIBLE_BATCH_SIZE;
     }
     if (network_array_1->nb_batchs != network_array_2->nb_batchs)
     {
-        return 0;
+        return INCOMPATIBLE_NB_BATCHS;
     }
-    return 1;
+    return COMPATIBLE_SIZES;
 }
 
-double *MSE(NetworkArray *prediction, NetworkArray *truth)
+int compute_MSE(NetworkArray *prediction, NetworkArray *truth, double **mse_array)
 {
-    if (!compare_size(prediction, truth))
+    int check_size = compare_size(prediction, truth);
+    if (check_size != COMPATIBLE_SIZES)
     {
-        return NULL;
+        return COMPATIBLE_SIZES;
     }
-    double *mse_array = (double *)malloc(sizeof(double) * prediction->nb_batchs);
+    double *array = (double *)malloc(sizeof(double) * prediction->nb_batchs);
     double error_sum, diff;
     for (int i = 0; i < prediction->nb_batchs; i++)
     {
@@ -123,9 +130,10 @@ double *MSE(NetworkArray *prediction, NetworkArray *truth)
             diff = prediction->vals[i][j] - truth->vals[i][j];
             error_sum +=  diff * diff;
         }
-        mse_array[i] = error_sum / (double)prediction->nb_batchs;
+        array[i] = error_sum / (double)prediction->nb_batchs;
     }
-    return mse_array;
+    *mse_array = array;
+    return SUCCESS;
 }
 
 

@@ -34,6 +34,7 @@ int feed_forward_network(DenseNetwork *network, NetworkArray *input_array);
 NetworkArray *predict(DenseNetwork *network, NetworkArray *input_array);
 
 // Back-propagation
+int fit(DenseNetwork *network, NetworkArray *input_array, NetworkArray *truth);
 int back_propagation(DenseNetwork *network, NetworkArray *truth);
 
 // Utils

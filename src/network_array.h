@@ -30,7 +30,7 @@ double get_val(NetworkArray *network_array, int batch_id, int val_id);
 
 // Comparators
 int compare_size(NetworkArray *network_array_1, NetworkArray *network_array_2);
-double *MSE(NetworkArray *prediction, NetworkArray *truth);
+int compute_MSE(NetworkArray *prediction, NetworkArray *truth, double **mse_array);
 
 // Utils
 void free_network_array(NetworkArray *network_array);

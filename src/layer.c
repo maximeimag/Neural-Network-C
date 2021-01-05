@@ -1,6 +1,7 @@
 #include "layer.h"
 #include "utils_func.h"
 #include "network_array.h"
+#include "constants.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
@@ -65,11 +66,15 @@ void init_layer_values(DenseLayer *layer)
 
 int is_compatible(DenseLayer *layer, NetworkArray *input_array)
 {
-    if (input_array->batch_size != layer->input_size || input_array->nb_batchs > layer->nb_batchs)
+    if (input_array->batch_size != layer->input_size)
     {
-        return 0;
+        return INCOMPATIBLE_INPUT_SIZE;
     }
-    return 1;
+    if (input_array->nb_batchs > layer->nb_batchs)
+    {
+        return INCOMPATIBLE_NB_BATCHS;
+    }
+    return COMPATIBLE_SIZES;
 }
 
 
@@ -77,13 +82,15 @@ int is_compatible(DenseLayer *layer, NetworkArray *input_array)
 
 int feed_forward(DenseLayer *layer, NetworkArray *input_array)
 {
-    int i, k;
-    if (!is_compatible(layer, input_array))
+    // Check sizes
+    int check_size = is_compatible(layer, input_array);
+    if (check_size != COMPATIBLE_SIZES)
     {
-        return -1;
+        return check_size;
     }
     // Compute Activation and Sigmoid for each element in output
     // The kth input in input-array of size (layer->input_size)
+    int i, k;
     for (k = 0; k < input_array->nb_batchs; k++)
     {
         // Compute The ith neuron activation value
@@ -94,7 +101,7 @@ int feed_forward(DenseLayer *layer, NetworkArray *input_array)
             layer->output->vals[k][i] = get_activation_value(get_val(layer->output, k, i), layer->activation_name, 0);
         }
     }
-    return 1;
+    return SUCCESS;
 }
 
 
@@ -129,7 +136,7 @@ void free_layer(DenseLayer *layer)
 {
     free_network_array(layer->output);
     free(layer->biais);
-    for (int i = 0; i < layer->input_size; i ++)
+    for (int i = 0; i < layer->output_size; i ++)
     {
         free(layer->weights[i]);
     }

@@ -67,7 +67,9 @@ int main()
     printf("\n ** Labels array ** \n");
     display_network_array(labels_array);
     printf("\n ** MSE Array ** \n");
-    double *mse_errors = MSE(network->output, labels_array);
+    double *mse_errors = NULL;
+    int status = compute_MSE(network->output, labels_array, &mse_errors);
+    printf(" * Output status %u \n", status);
     for (i = 0; i < nb_batchs; i++)
     {
         printf("%f ", mse_errors[i]);
@@ -79,5 +81,6 @@ int main()
     free_network_array(labels_array);
     free(labels);
     free_network_array(input_array);
+    free(mse_errors);
     return 0;
 }

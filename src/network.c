@@ -1,6 +1,7 @@
 #include "network.h"
 #include "network_array.h"
 #include "layer.h"
+#include "constants.h"
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -44,13 +45,13 @@ int is_compatible_output(DenseNetwork *network, NetworkArray *truth)
 {
     if (network->nb_batchs != truth->nb_batchs)
     {
-        return 0;
+        return INCOMPATIBLE_NB_BATCHS;
     }
     if (network->output_size != truth->batch_size)
     {
-        return 0;
+        return INCOMPATIBLE_OUTPUT_SIZE;
     }
-    return 1;
+    return COMPATIBLE_SIZES;
 }
 
 
@@ -59,22 +60,36 @@ int is_compatible_output(DenseNetwork *network, NetworkArray *truth)
 
 int feed_forward_network(DenseNetwork *network, NetworkArray *input_array)
 {
-    if (!is_compatible_input(network, input_array))
+    // Check sizes
+    int check_size = is_compatible_input(network, input_array);
+    if (check_size != COMPATIBLE_SIZES)
     {
-        return -1;
+        return check_size;
     }
-    feed_forward(network->layer_list[0], input_array);
+    // Feed forward to each layer
+    int end_status;
+    // Input array to first layer
+    end_status = feed_forward(network->layer_list[0], input_array);
+    if (end_status != SUCCESS)
+    {
+        return end_status;
+    }
+    // Last layer's output to the next
     for (int i = 1; i < network->nb_layers; i++)
     {
-        feed_forward(network->layer_list[i], network->layer_list[i - 1]->output);
+        if (end_status != SUCCESS)
+        {
+            return end_status;
+        }
+        end_status = feed_forward(network->layer_list[i], network->layer_list[i - 1]->output);
     }
-    return 1;
+    return SUCCESS;
 }
 
 NetworkArray *predict(DenseNetwork *network, NetworkArray *input_array)
 {
-    int res = feed_forward_network(network, input_array);
-    if (res == 1)
+    int end_status = feed_forward_network(network, input_array);
+    if (end_status == SUCCESS)
     {
         return network->output;
     }
@@ -85,9 +100,44 @@ NetworkArray *predict(DenseNetwork *network, NetworkArray *input_array)
 }
 
 /* Back-propagation */
+int fit(DenseNetwork *network, NetworkArray *input_array, NetworkArray *truth)
+{
+    // Check sizes
+    int check_size = is_compatible_input(network, input_array);
+    if (check_size != COMPATIBLE_SIZES)
+    {
+        return check_size;
+    }
+    // Feed forward to get output
+    int feed_status = feed_forward_network(network, input_array);
+    // If feed forward is a success, apply back_propagation
+    if (feed_status != SUCCESS)
+    {
+        return back_propagation(network, truth);
+    }
+    else
+    {
+        return feed_status;
+    }
+}
+
+
 int back_propagation(DenseNetwork *network, NetworkArray *truth)
 {
-    return (int)is_compatible_output(network, truth);
+    int check_size = is_compatible_output(network, truth);
+    if (check_size != COMPATIBLE_SIZES)
+    {
+        return check_size;
+    }
+    // Get MSE errors
+    double *mse_errors = NULL;
+    int mse_status = compute_MSE(network->output, truth, &mse_errors);
+    if (mse_status != SUCCESS)
+    {
+        return mse_status;
+    }
+    // TODO : Implement Back propagation
+    return SUCCESS;
 }
 
 void display_network(DenseNetwork *network)
