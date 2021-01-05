@@ -2,10 +2,12 @@
 # make 			# Compile all binaries
 # make clean	# Clean all objects
 # make mrproper	# Clean all binaries and objects
+# make run 		# Complie all binaries and run final executable
 
 CC=gcc
-CFLAGS=-W -Wall -ansi -pedantic -std=c99
+CFLAGS= -g -W -Wall -ansi -pedantic -std=c99
 LDFLAGS=
+DEBUGGER=gdb
 EXEC=test.exe
 SRC= $(wildcard src/*.c)
 OBJ= $(SRC:.c=.o)
@@ -29,6 +31,8 @@ endif
 
 all: $(EXEC)
 
+compile: $(EXEC)
+
 $(EXEC): $(OBJ)
 	$(CC) -o $@ $^ $(LDFLAGS)
 
@@ -40,4 +44,12 @@ clean:
 	$(RM_COM) $(RM_FLAGS) $(GCHS_RM)
 
 mrproper: clean
-	rm -rf $(EXEC)
+	$(RM_COM) $(RM_FLAGS) $(EXEC)
+
+recompile: mrproper compile
+
+run: recompile
+	$(EXEC)
+
+debug: recompile
+	$(DEBUGGER) $(EXEC)

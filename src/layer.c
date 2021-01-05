@@ -87,7 +87,7 @@ int feed_forward(DenseLayer *layer, NetworkArray *input_array)
     for (k = 0; k < input_array->nb_batchs; k++)
     {
         // Compute The ith neuron activation value
-        for (i = 0; i < input_array->batch_size; i++)
+        for (i = 0; i < layer->output_size; i++)
         {
             layer->output->vals[k][i] = dot_product(layer->weights[i], input_array->vals[k], layer->input_size);
             layer->output->vals[k][i] += layer->biais[i];
