@@ -1,8 +1,9 @@
-#include "network_array.h"
-#include "utils_func.h"
-#include "constants.h"
 #include <stdio.h>
 #include <stdlib.h>
+
+#include "network_array.h"
+#include "utils.h"
+#include "constants.h"
 
 /* Contructors */
 
@@ -56,7 +57,7 @@ void init_array_values(NetworkArray *network_array)
     {
         for (j = 0; j < network_array->batch_size; j++)
         {
-            network_array->vals[i][j] = get_random_value();
+            network_array->vals[i][j] = get_random_double(0, 1);
         }
     }
 }
@@ -95,6 +96,16 @@ double get_val(NetworkArray *network_array, int batch_id, int val_id)
         return network_array->vals[batch_id][val_id];
     }
     return get_nan();
+}
+
+double *get_batch(NetworkArray *network_array, int batch_id)
+{
+    double *batch = NULL;
+    if (is_valid_index(network_array, batch_id, 0) == VALID_INDEX)
+    {
+        batch = network_array->vals[batch_id];
+    }
+    return batch;
 }
 
 

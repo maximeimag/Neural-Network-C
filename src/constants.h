@@ -17,5 +17,8 @@
 #define INVALID_BATCH_ID -11
 #define INVALID_VAL_ID -12
 
+// Not implmented
+#define UNIMPLEMENTED -10
+#define UNDEFINED -11
 
 #endif // CONSTANTS_H_INCLUDED

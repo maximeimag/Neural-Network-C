@@ -3,7 +3,9 @@
 #include "layer.h"
 #include "network.h"
 #include "network_array.h"
-#include "utils_func.h"
+#include "utils.h"
+#include "activation.h"
+#include "normalization.h"
 
 int main()
 {
@@ -12,6 +14,7 @@ int main()
     int nb_labels = output_size;
     int nb_layers = 5;
     int activation_name = ACTIVATION_ReLU;
+    int normalization_type = MIN_MAX;
     int i;
     int *layer_sizes = (int *)malloc(sizeof(int) * (nb_layers + 1));
     layer_sizes[0] = input_size;
@@ -34,7 +37,7 @@ int main()
 
     // Initialize a single layer
     DenseLayer *layer;
-    layer = create_dense_layer(input_size, output_size, nb_batchs, activation_name);
+    layer = create_dense_layer(input_size, output_size, nb_batchs, activation_name, normalization_type);
     printf("\n ** Random layer ** \n");
     display_dense_layer(layer);
 

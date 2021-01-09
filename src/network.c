@@ -2,6 +2,7 @@
 #include "network_array.h"
 #include "layer.h"
 #include "constants.h"
+#include "normalization.h"
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -22,11 +23,16 @@ DenseNetwork *create_network(
     network->nb_batchs = nb_batchs;
     network->activation_name = activation_name;
     network->nb_layers = nb_layers;
+    int normalization_type = STANDARDIZATION;
     DenseLayer *layer;
     network->layer_list = (DenseLayer **)malloc(sizeof(DenseLayer *) * nb_layers);
     for (int i = 0; i < nb_layers; i++)
     {
-        layer = create_dense_layer(layer_sizes[i], layer_sizes[i + 1], nb_batchs, activation_name);
+        if (i == nb_layers - 1)
+        {
+            normalization_type = MIN_MAX;
+        }
+        layer = create_dense_layer(layer_sizes[i], layer_sizes[i + 1], nb_batchs, activation_name, normalization_type);
         network->layer_list[i] = layer;
         network->output = layer->output;
     }
