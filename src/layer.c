@@ -43,7 +43,7 @@ void init_layer_biais(DenseLayer *layer)
     int j;
     for (j = 0; j < layer->output_size; j ++)
     {
-        layer->biais[j] = 1.0f;
+        layer->biais[j] = get_random_double(0.0f, 1.0f);
     }
 }
 
@@ -103,7 +103,7 @@ int feed_forward(DenseLayer *layer, NetworkArray *input_array)
         {
             layer->output->vals[k][i] = dot_product(layer->weights[i], input_array->vals[k], layer->input_size);
             layer->output->vals[k][i] += layer->biais[i];
-            layer->output->vals[k][i] = get_activation_value(get_val(layer->output, k, i), layer->activation_name, 0);
+            layer->output->vals[k][i] = get_activation_value(get_val(layer->output, k, i), layer->activation_name, ACTIVATION);
         }
     }
     // Normalize output
