@@ -1,7 +1,9 @@
 #include "layer.h"
-#include "utils_func.h"
+#include "utils.h"
 #include "network_array.h"
 #include "constants.h"
+#include "activation.h"
+#include "normalization.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
@@ -9,13 +11,16 @@
 
 /* Constructors */
 
-DenseLayer *create_dense_layer(int input_size, int output_size, int nb_batchs, int activation_name)
+DenseLayer *create_dense_layer(int input_size, int output_size, int nb_batchs, int activation_name, int normalization_type)
 {
     DenseLayer *layer = (DenseLayer *)malloc(sizeof(DenseLayer));
+    // Dimensions of the layer
     layer->input_size = input_size;
     layer->output_size = output_size;
     layer->nb_batchs = nb_batchs;
+    // Choose activation and normalization
     layer->activation_name = activation_name;
+    layer->normalization_type = normalization_type;
     // layers->output->vals[k][i] : ith value of the kth batch in the output
     layer->output = create_random_array(output_size, nb_batchs);
     // biais[i] = biais for output neuron i
@@ -38,7 +43,7 @@ void init_layer_biais(DenseLayer *layer)
     int j;
     for (j = 0; j < layer->output_size; j ++)
     {
-        layer->biais[j] = 1.0f;
+        layer->biais[j] = get_random_double(0.0f, 1.0f);
     }
 }
 
@@ -49,7 +54,7 @@ void init_layer_weights(DenseLayer *layer)
     {
         for (j = 0; j < layer->input_size; j ++)
         {
-            layer->weights[i][j] = get_random_value();
+            layer->weights[i][j] = get_random_double(0.0f, 1.0f);
         }
     }
 }
@@ -98,8 +103,13 @@ int feed_forward(DenseLayer *layer, NetworkArray *input_array)
         {
             layer->output->vals[k][i] = dot_product(layer->weights[i], input_array->vals[k], layer->input_size);
             layer->output->vals[k][i] += layer->biais[i];
-            layer->output->vals[k][i] = get_activation_value(get_val(layer->output, k, i), layer->activation_name, 0);
+            layer->output->vals[k][i] = get_activation_value(get_val(layer->output, k, i), layer->activation_name, ACTIVATION);
         }
+    }
+    // Normalize output
+    if (layer->normalization_type != NO_NORMALIZATION)
+    {
+        return normalize_network_array(layer->output, layer->normalization_type);
     }
     return SUCCESS;
 }

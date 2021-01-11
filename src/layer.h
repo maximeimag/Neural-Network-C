@@ -1,5 +1,4 @@
 #include "network_array.h"
-#include "utils_func.h"
 #ifndef LAYER_H_INCLUDED
 #define LAYER_H_INCLUDED
 
@@ -10,13 +9,14 @@ struct DenseLayer
     int output_size;
     int nb_batchs;
     int activation_name;
+    int normalization_type;
     NetworkArray *output;
     double *biais;
     double **weights;
 };
 
 // Constructors
-DenseLayer *create_dense_layer(int input_size, int output_size, int nb_batchs, int activation_name);
+DenseLayer *create_dense_layer(int input_size, int output_size, int nb_batchs, int activation_name, int normalization_type);
 
 // Initialization
 void init_layer_values(DenseLayer *layer);

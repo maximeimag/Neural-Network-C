@@ -27,6 +27,7 @@ void init_array_values(NetworkArray *network_array);
 int is_valid_index(NetworkArray *network_array, int batch_id, int val_id);
 int set_val(NetworkArray *network_array, int batch_id, int val_id, double new_val);
 double get_val(NetworkArray *network_array, int batch_id, int val_id);
+double *get_batch(NetworkArray *network_array, int batch_id);
 
 // Comparators
 int compare_size(NetworkArray *network_array_1, NetworkArray *network_array_2);
