@@ -86,6 +86,11 @@ int main()
     {
         printf("%f ", mse_errors[i]);
     }
+    printf("\n ** Diff Array ** \n");
+    NetworkArray *diff = create_array(network->output_size, nb_batchs);
+    message_id = compute_diff(network->output, labels_array, diff);
+    display_error_message(message_id);
+    display_network_array(diff);
 
     // Free datas
     free_network(network);

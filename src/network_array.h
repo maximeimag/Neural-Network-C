@@ -36,6 +36,8 @@ double *get_batch(NetworkArray *network_array, int batch_id);
 // Comparators
 int compare_size(NetworkArray *network_array_1, NetworkArray *network_array_2);
 int compute_MSE(NetworkArray *prediction, NetworkArray *truth, double **mse_array);
+/* diff <- network_array_1 - network_array_2 */
+int compute_diff(NetworkArray *network_array_1, NetworkArray *network_array_2, NetworkArray *diff);
 
 // Utils
 void free_network_array(NetworkArray *network_array);

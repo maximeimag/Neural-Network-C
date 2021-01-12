@@ -164,6 +164,25 @@ int compute_MSE(NetworkArray *prediction, NetworkArray *truth, double **mse_arra
 }
 
 
+/* diff <- network_array_1 - network_array_2 */
+int compute_diff(NetworkArray *network_array_1, NetworkArray *network_array_2, NetworkArray *diff)
+{
+    // Check sizes
+    int check_size_1 = compare_size(network_array_1, diff), check_size_2 = compare_size(network_array_2, diff);
+    if (check_size_1 != COMPATIBLE_SIZES || check_size_2 != COMPATIBLE_SIZES)
+    {
+        return min(check_size_1, check_size_2);
+    }
+    // Compute diff
+    for (int i = 0; i < diff->nb_batchs; i++) {
+        for (int j = 0; j < diff->batch_size; j++) {
+            diff->vals[i][j] = network_array_1->vals[i][j] - network_array_2->vals[i][j];
+        }
+    }
+    return SUCCESS;
+}
+
+
 /* Utils */
 
 void free_network_array(NetworkArray *network_array)
