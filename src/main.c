@@ -13,10 +13,10 @@
 int main()
 {
     // Initialize variables to define network
-    int nb_labels = 2;
+    int nb_labels = 6;
     int nb_batchs  = 5;
     double lower = 0.0f, upper = 1.0f;
-    int activation_name = ACTIVATION_sigmoid;
+    int activation_name = ACTIVATION_ReLU;
     int normalization_type = MIN_MAX;
     int message_id;
 
@@ -61,19 +61,18 @@ int main()
         output_size,
         nb_batchs,
         activation_name,
+        normalization_type,
         nb_layers,
         layer_sizes
     );
-    printf("\n ** Network Structure ** \n");
-    display_network(network);
-    printf("\n ** Network output before update ** \n");
-    display_network_array(network->output);
+    printf("\n ** Network before update ** \n");
+    summary_with_output(network);
 
     // Update and display output
     message_id = feed_forward_network(network, input_array);
-    printf("\n ** Network output after update ** \n");
+    printf("\n ** Network after update ** \n");
     display_error_message(message_id);
-    display_network_array(network->output);
+    summary_with_output(network);
 
     // Get MSE errors
     printf("\n ** Labels array ** \n");

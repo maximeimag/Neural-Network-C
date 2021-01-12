@@ -27,6 +27,9 @@ NetworkArray *create_array_from_labels(int batch_size, int *labels, int nb_batch
 void set_fixed_value(NetworkArray *network_array, double fixed_value);
 void set_random_values(NetworkArray *network_array, double lower, double upper);
 
+// Copy values
+int copy_network_array(NetworkArray *src, NetworkArray *dest);
+
 // Getters and Setters
 int is_valid_index(NetworkArray *network_array, int batch_id, int val_id);
 int set_val(NetworkArray *network_array, int batch_id, int val_id, double new_val);

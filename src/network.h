@@ -10,8 +10,10 @@ struct DenseNetwork
     int output_size;
     int nb_batchs;
     int activation_name;
+    int normalization_type;
     int nb_layers;
     DenseLayer **layer_list;
+    NetworkArray *final_activation;
     NetworkArray *output;
 };
 
@@ -21,6 +23,7 @@ DenseNetwork *create_network(
     int output_size,
     int nb_batchs,
     int activation_name,
+    int normalization_type,
     int nb_layers,
     int *layer_sizes
 );
@@ -38,7 +41,8 @@ int fit(DenseNetwork *network, NetworkArray *input_array, NetworkArray *truth);
 int back_propagation(DenseNetwork *network, NetworkArray *truth);
 
 // Utils
-void display_network(DenseNetwork *network);
+void summary(DenseNetwork *network);
+void summary_with_output(DenseNetwork *network);
 void free_network(DenseNetwork *network);
 
 #endif // NETWORK_H_INCLUDED

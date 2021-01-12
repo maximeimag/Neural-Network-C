@@ -22,7 +22,8 @@ DenseLayer *create_dense_layer(int input_size, int output_size, int nb_batchs, i
     layer->activation_name = activation_name;
     layer->normalization_type = normalization_type;
     // layers->output->vals[k][i] : ith value of the kth batch in the output
-    layer->output = create_array(output_size, nb_batchs);
+    layer->weighted_sum = create_array(output_size, nb_batchs);
+    layer->activation = create_array(output_size, nb_batchs);
     // biais[i] = biais for output neuron i
     layer->biais = (double *)malloc(sizeof(double) * output_size);
     // weights[i][j] = weight of link between output neuron i and input neuron j
@@ -63,7 +64,8 @@ void init_layer_values(DenseLayer *layer)
 {
     init_layer_biais(layer);
     init_layer_weights(layer);
-    set_fixed_value(layer->output, 0.0f);
+    set_fixed_value(layer->weighted_sum, 0.0f);
+    set_fixed_value(layer->activation, 0.0f);
 }
 
 
@@ -101,15 +103,15 @@ int feed_forward(DenseLayer *layer, NetworkArray *input_array)
         // Compute The ith neuron activation value
         for (i = 0; i < layer->output_size; i++)
         {
-            layer->output->vals[k][i] = dot_product(layer->weights[i], input_array->vals[k], layer->input_size);
-            layer->output->vals[k][i] += layer->biais[i];
-            layer->output->vals[k][i] = get_activation_value(get_val(layer->output, k, i), layer->activation_name, ACTIVATION);
+            layer->weighted_sum->vals[k][i] = dot_product(layer->weights[i], input_array->vals[k], layer->input_size);
+            layer->weighted_sum->vals[k][i] += layer->biais[i];
+            layer->activation->vals[k][i] = get_activation_value(get_val(layer->weighted_sum, k, i), layer->activation_name, ACTIVATION);
         }
     }
     // Normalize output
     if (layer->normalization_type != NO_NORMALIZATION)
     {
-        return normalize_network_array(layer->output, layer->normalization_type);
+        return normalize_network_array(layer->activation, layer->normalization_type);
     }
     return SUCCESS;
 }
@@ -122,8 +124,10 @@ void display_dense_layer(DenseLayer *layer)
     int i, j;
     printf("\n Input size : %d \n", layer->input_size);
     printf("Output size : %d \n", layer->output_size);
-    printf("Output Array : \n [");
-    display_network_array(layer->output);
+    printf("Weighted Sum : \n [");
+    display_network_array(layer->weighted_sum);
+    printf("Activation : \n [");
+    display_network_array(layer->activation);
     printf("Bias : \n [");
     for (i = 0; i < layer->output_size; i ++)
     {
@@ -144,7 +148,8 @@ void display_dense_layer(DenseLayer *layer)
 
 void free_layer(DenseLayer *layer)
 {
-    free_network_array(layer->output);
+    free_network_array(layer->weighted_sum);
+    free_network_array(layer->activation);
     free(layer->biais);
     for (int i = 0; i < layer->output_size; i ++)
     {

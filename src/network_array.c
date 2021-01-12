@@ -78,6 +78,23 @@ void set_random_values(NetworkArray *network_array, double lower, double upper)
     }
 }
 
+/* Copy */
+int copy_network_array(NetworkArray *src, NetworkArray *dest)
+{
+    int check_size = compare_size(src, dest);
+    if (check_size != COMPATIBLE_SIZES)
+    {
+        return check_size;
+    }
+    for (int i = 0; i < src->nb_batchs; i++) {
+        for (int j = 0; j < src->batch_size; j++) {
+            dest->vals[i][j] = src->vals[i][j];
+        }
+    }
+
+    return SUCCESS;
+}
+
 
 /* Getters and Setters */
 

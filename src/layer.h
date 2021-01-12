@@ -10,7 +10,8 @@ struct DenseLayer
     int nb_batchs;
     int activation_name;
     int normalization_type;
-    NetworkArray *output;
+    NetworkArray *weighted_sum;
+    NetworkArray *activation;
     double *biais;
     double **weights;
 };
