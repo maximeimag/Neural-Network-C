@@ -77,7 +77,7 @@ double get_min(double *array, int array_size)
 {
     double min_value = array[0];
     for (int i = 1; i < array_size; i++) {
-        min_value = min(min_value, array[i]);
+        min_value = fmin(min_value, array[i]);
     }
     return min_value;
 }
@@ -86,7 +86,7 @@ double get_max(double *array, int array_size)
 {
     double max_value = array[0];
     for (int i = 1; i < array_size; i++) {
-        max_value = max(max_value, array[i]);
+        max_value = fmax(max_value, array[i]);
     }
     return max_value;
 }

@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 
 #include "network_array.h"
 #include "utils.h"
@@ -188,7 +189,7 @@ int compute_diff(NetworkArray *network_array_1, NetworkArray *network_array_2, N
     int check_size_1 = compare_size(network_array_1, diff), check_size_2 = compare_size(network_array_2, diff);
     if (check_size_1 != COMPATIBLE_SIZES || check_size_2 != COMPATIBLE_SIZES)
     {
-        return min(check_size_1, check_size_2);
+        return fmin(check_size_1, check_size_2);
     }
     // Compute diff
     for (int i = 0; i < diff->nb_batchs; i++) {
