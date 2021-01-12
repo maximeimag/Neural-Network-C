@@ -5,21 +5,27 @@
 #include "network_array.h"
 #include "utils.h"
 #include "activation.h"
+#include "constants.h"
 #include "normalization.h"
+
+
 
 int main()
 {
     // Initialize variables to define network
-    int input_size = 2, output_size = 2, nb_batchs = 5, hidden_size = 6;
-    int nb_labels = output_size;
-    int nb_layers = 5;
+    int nb_labels = 2;
+    int nb_batchs  = 5;
     int activation_name = ACTIVATION_sigmoid;
     int normalization_type = MIN_MAX;
-    int i;
+    int message_id;
+
+    // Layer sizes for network
+    int nb_layers = 5;
+    int input_size = 2, output_size = nb_labels, hidden_size = 6;
     int *layer_sizes = (int *)malloc(sizeof(int) * (nb_layers + 1));
     layer_sizes[0] = input_size;
     layer_sizes[nb_layers] = output_size;
-    for (i = 1; i < nb_layers; i++)
+    for (int i = 1; i < nb_layers; i++)
     {
         layer_sizes[i] = hidden_size;
     }
@@ -42,8 +48,9 @@ int main()
     display_dense_layer(layer);
 
     // Update Output for a single layer
-    feed_forward(layer, input_array);
+    message_id = feed_forward(layer, input_array);
     printf("\n ** Random layer after feed forward ** \n");
+    display_error_message(message_id);
     display_dense_layer(layer);
 
     //Initialize a network
@@ -62,8 +69,9 @@ int main()
     display_network_array(network->output);
 
     // Update and display output
-    feed_forward_network(network, input_array);
+    message_id = feed_forward_network(network, input_array);
     printf("\n ** Network output after update ** \n");
+    display_error_message(message_id);
     display_network_array(network->output);
 
     // Get MSE errors
@@ -71,9 +79,9 @@ int main()
     display_network_array(labels_array);
     printf("\n ** MSE Array ** \n");
     double *mse_errors = NULL;
-    int status = compute_MSE(network->output, labels_array, &mse_errors);
-    printf(" * Output status %u \n", status);
-    for (i = 0; i < nb_batchs; i++)
+    message_id = compute_MSE(network->output, labels_array, &mse_errors);
+    display_error_message(message_id);
+    for (int i = 0; i < nb_batchs; i++)
     {
         printf("%f ", mse_errors[i]);
     }
