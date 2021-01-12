@@ -141,7 +141,7 @@ int compute_MSE(NetworkArray *prediction, NetworkArray *truth, double **mse_arra
             diff = prediction->vals[i][j] - truth->vals[i][j];
             error_sum +=  diff * diff;
         }
-        array[i] = error_sum / (double)prediction->nb_batchs;
+        array[i] = error_sum / (double)(prediction->batch_size * 2);
     }
     *mse_array = array;
     return SUCCESS;
