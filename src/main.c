@@ -15,6 +15,7 @@ int main()
     // Initialize variables to define network
     int nb_labels = 2;
     int nb_batchs  = 5;
+    double lower = 0.0f, upper = 1.0f;
     int activation_name = ACTIVATION_sigmoid;
     int normalization_type = MIN_MAX;
     int message_id;
@@ -31,7 +32,7 @@ int main()
     }
 
     //Initialize Input array
-    NetworkArray *input_array = create_random_array(input_size, nb_batchs);
+    NetworkArray *input_array = create_random_array(input_size, nb_batchs, lower, upper);
     printf("\n \n ** Input array ** \n");
     display_network_array(input_array);
 

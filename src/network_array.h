@@ -15,13 +15,17 @@ struct NetworkArray
 };
 
 // Constructors
+NetworkArray *create_array(int batch_size, int nb_batchs);
+// With fixed value
+NetworkArray *create_fixed_array(int batch_size, int nb_batchs, double init_value);
 // Fully random
-NetworkArray *create_random_array(int batch_size, int nb_batchs);
+NetworkArray *create_random_array(int batch_size, int nb_batchs, double upper, double lower);
 // From labels in 1D array
 NetworkArray *create_array_from_labels(int batch_size, int *labels, int nb_batchs);
 
 // Initialization
-void init_array_values(NetworkArray *network_array);
+void set_fixed_value(NetworkArray *network_array, double fixed_value);
+void set_random_values(NetworkArray *network_array, double lower, double upper);
 
 // Getters and Setters
 int is_valid_index(NetworkArray *network_array, int batch_id, int val_id);

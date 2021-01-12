@@ -7,29 +7,37 @@
 
 /* Contructors */
 
-NetworkArray *create_random_array(int batch_size, int nb_batchs)
+NetworkArray *create_array(int batch_size, int nb_batchs)
 {
-    int i, j;
     NetworkArray *network_array = (NetworkArray *)malloc(sizeof(NetworkArray));
     network_array->batch_size = batch_size;
     network_array->nb_batchs = nb_batchs;
     network_array->vals = (double **)malloc(sizeof(double *) * nb_batchs);
-    for (i = 0; i < nb_batchs; i++)
+    for (int i = 0; i < nb_batchs; i++)
     {
         network_array->vals[i] = (double *)malloc(sizeof(double) * batch_size);
-        for (j = 0; j < batch_size; j++)
-        {
-            network_array->vals[i][j] = 0.0f;
-        }
     }
-    init_array_values(network_array);
+    return network_array;
+}
+
+NetworkArray *create_fixed_array(int batch_size, int nb_batchs, double init_value)
+{
+    NetworkArray *network_array = create_array(batch_size, nb_batchs);
+    set_fixed_value(network_array, init_value);
+    return network_array;
+}
+
+NetworkArray *create_random_array(int batch_size, int nb_batchs, double upper, double lower)
+{
+    NetworkArray *network_array = create_array(batch_size, nb_batchs);
+    set_random_values(network_array, lower, upper);
     return network_array;
 }
 
 NetworkArray *create_array_from_labels(int batch_size, int *labels, int nb_batchs)
 {
     int i, j;
-    NetworkArray *network_array = create_random_array(batch_size, nb_batchs);
+    NetworkArray *network_array = create_fixed_array(batch_size, nb_batchs, 0.0);
     for (i = 0; i < network_array->nb_batchs; i++)
     {
         for (j = 0; j < network_array->batch_size; j++)
@@ -37,10 +45,6 @@ NetworkArray *create_array_from_labels(int batch_size, int *labels, int nb_batch
             if (j == labels[i])
             {
                 network_array->vals[i][j] = 1.0;
-            }
-            else
-            {
-                network_array->vals[i][j] = 0.0;
             }
         }
     }
@@ -50,14 +54,26 @@ NetworkArray *create_array_from_labels(int batch_size, int *labels, int nb_batch
 
 /* Initialization */
 
-void init_array_values(NetworkArray *network_array)
+void set_fixed_value(NetworkArray *network_array, double fixed_value)
 {
     int i, j;
     for (i = 0; i < network_array->nb_batchs; i++)
     {
         for (j = 0; j < network_array->batch_size; j++)
         {
-            network_array->vals[i][j] = get_random_double(0, 1);
+            network_array->vals[i][j] = fixed_value;
+        }
+    }
+}
+
+void set_random_values(NetworkArray *network_array, double lower, double upper)
+{
+    int i, j;
+    for (i = 0; i < network_array->nb_batchs; i++)
+    {
+        for (j = 0; j < network_array->batch_size; j++)
+        {
+            network_array->vals[i][j] = get_random_double(lower, upper);
         }
     }
 }
@@ -129,7 +145,7 @@ int compute_MSE(NetworkArray *prediction, NetworkArray *truth, double **mse_arra
     int check_size = compare_size(prediction, truth);
     if (check_size != COMPATIBLE_SIZES)
     {
-        return COMPATIBLE_SIZES;
+        return check_size;
     }
     double *array = (double *)malloc(sizeof(double) * prediction->nb_batchs);
     double error_sum, diff;

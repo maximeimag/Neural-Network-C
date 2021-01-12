@@ -22,7 +22,7 @@ DenseLayer *create_dense_layer(int input_size, int output_size, int nb_batchs, i
     layer->activation_name = activation_name;
     layer->normalization_type = normalization_type;
     // layers->output->vals[k][i] : ith value of the kth batch in the output
-    layer->output = create_random_array(output_size, nb_batchs);
+    layer->output = create_array(output_size, nb_batchs);
     // biais[i] = biais for output neuron i
     layer->biais = (double *)malloc(sizeof(double) * output_size);
     // weights[i][j] = weight of link between output neuron i and input neuron j
@@ -63,7 +63,7 @@ void init_layer_values(DenseLayer *layer)
 {
     init_layer_biais(layer);
     init_layer_weights(layer);
-    init_array_values(layer->output);
+    set_fixed_value(layer->output, 0.0f);
 }
 
 
