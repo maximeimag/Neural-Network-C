@@ -1,6 +1,18 @@
 #ifndef UTILS_H_INCLUDED
 #define UTILS_H_INCLUDED
 
+/* Macros for MIN and MAX */
+#define max(a,b) \
+  ({ __typeof__ (a) _a = (a); \
+      __typeof__ (b) _b = (b); \
+    _a > _b ? _a : _b; })
+
+#define min(a,b) \
+  ({ __typeof__ (a) _a = (a); \
+      __typeof__ (b) _b = (b); \
+    _a < _b ? _a : _b; })
+
+
 /* Random Array */
 int *create_random_labels_array(int nb_labels, int array_size);
 double get_random_double(double lower, double upper);

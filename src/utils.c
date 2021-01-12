@@ -3,17 +3,6 @@
 #include <stdlib.h>
 #include <math.h>
 
-/* Macros for MIN and MAX */
-#define max(a,b) \
-  ({ __typeof__ (a) _a = (a); \
-      __typeof__ (b) _b = (b); \
-    _a > _b ? _a : _b; })
-
-#define min(a,b) \
-  ({ __typeof__ (a) _a = (a); \
-      __typeof__ (b) _b = (b); \
-    _a < _b ? _a : _b; })
-
 /* Random Array */
 
 // Returns an array of size array_size containing values in [0, nb_labels - 1]
