@@ -29,8 +29,8 @@ DenseNetwork *create_network(
 );
 
 // Comparators
-int is_compatible_input(DenseNetwork *network, NetworkArray *input_array);
-int is_compatible_output(DenseNetwork *network, NetworkArray *truth);
+int is_compatible_network_input(DenseNetwork *network, NetworkArray *input_array);
+int is_compatible_network_output(DenseNetwork *network, NetworkArray *truth);
 
 // Feed forward
 int feed_forward_network(DenseNetwork *network, NetworkArray *input_array);

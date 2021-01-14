@@ -25,7 +25,8 @@ void init_layer_output_array(DenseLayer *layer);
 void init_layer_weights(DenseLayer *layer);
 
 // Comparators
-int is_compatible(DenseLayer *layer, NetworkArray *input_array);
+int is_compatible_layer_input(DenseLayer *layer, NetworkArray *input_array);
+int is_compatible_layer_output(DenseLayer *layer, NetworkArray *output_array);
 
 // Feed forward
 int feed_forward(DenseLayer *layer, NetworkArray *input_array);

@@ -41,22 +41,14 @@ DenseNetwork *create_network(
 
 /* Comparators */
 
-int is_compatible_input(DenseNetwork *network, NetworkArray *input_array)
+int is_compatible_network_input(DenseNetwork *network, NetworkArray *input_array)
 {
-    return is_compatible(network->layer_list[0], input_array);
+    return is_compatible_layer_input(network->layer_list[0], input_array);
 }
 
-int is_compatible_output(DenseNetwork *network, NetworkArray *truth)
+int is_compatible_network_output(DenseNetwork *network, NetworkArray *truth)
 {
-    if (network->nb_batchs != truth->nb_batchs)
-    {
-        return INCOMPATIBLE_NB_BATCHS;
-    }
-    if (network->output_size != truth->batch_size)
-    {
-        return INCOMPATIBLE_OUTPUT_SIZE;
-    }
-    return COMPATIBLE_SIZES;
+    return is_compatible_layer_output(network->layer_list[network->nb_layers - 1], truth);
 }
 
 
@@ -66,7 +58,7 @@ int is_compatible_output(DenseNetwork *network, NetworkArray *truth)
 int feed_forward_network(DenseNetwork *network, NetworkArray *input_array)
 {
     // Check sizes
-    int check_size = is_compatible_input(network, input_array);
+    int check_size = is_compatible_network_input(network, input_array);
     if (check_size != COMPATIBLE_SIZES)
     {
         return check_size;
@@ -120,7 +112,7 @@ NetworkArray *predict(DenseNetwork *network, NetworkArray *input_array)
 int fit(DenseNetwork *network, NetworkArray *input_array, NetworkArray *truth)
 {
     // Check sizes
-    int check_size = is_compatible_input(network, input_array);
+    int check_size = is_compatible_network_input(network, input_array);
     if (check_size != COMPATIBLE_SIZES)
     {
         return check_size;
@@ -141,7 +133,7 @@ int fit(DenseNetwork *network, NetworkArray *input_array, NetworkArray *truth)
 
 int back_propagation(DenseNetwork *network, NetworkArray *truth)
 {
-    int check_size = is_compatible_output(network, truth);
+    int check_size = is_compatible_network_output(network, truth);
     if (check_size != COMPATIBLE_SIZES)
     {
         return check_size;

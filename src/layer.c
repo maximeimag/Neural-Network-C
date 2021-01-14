@@ -71,7 +71,7 @@ void init_layer_values(DenseLayer *layer)
 
 /* Comparators */
 
-int is_compatible(DenseLayer *layer, NetworkArray *input_array)
+int is_compatible_layer_input(DenseLayer *layer, NetworkArray *input_array)
 {
     if (input_array->batch_size != layer->input_size)
     {
@@ -84,13 +84,26 @@ int is_compatible(DenseLayer *layer, NetworkArray *input_array)
     return COMPATIBLE_SIZES;
 }
 
+int is_compatible_layer_output(DenseLayer *layer, NetworkArray *output_array)
+{
+    if (output_array->batch_size != layer->output_size)
+    {
+        return INCOMPATIBLE_INPUT_SIZE;
+    }
+    if (output_array->nb_batchs > layer->nb_batchs)
+    {
+        return INCOMPATIBLE_NB_BATCHS;
+    }
+    return COMPATIBLE_SIZES;
+}
+
 
 /* Feed forward */
 
 int feed_forward(DenseLayer *layer, NetworkArray *input_array)
 {
     // Check sizes
-    int check_size = is_compatible(layer, input_array);
+    int check_size = is_compatible_layer_input(layer, input_array);
     if (check_size != COMPATIBLE_SIZES)
     {
         return check_size;
